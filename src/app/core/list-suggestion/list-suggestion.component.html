@@ -1,0 +1,147 @@
+<div class="suggestions-container">
+  <header class="suggestions-header">
+    <h1>Liste des Suggestions</h1>
+    <p class="subtitle">
+      Explorez, likez et ajoutez à vos favoris les suggestions proposées. Participez à l'amélioration de notre plateforme !
+    </p>
+  </header>
+
+  <!-- Statistiques -->
+  <div class="stats-container">
+    <div class="stat-item">
+      <div class="stat-value">{{ suggestions.length }}</div>
+      <div class="stat-label">Suggestions totales</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">{{ getTotalLikes() }}</div>
+      <div class="stat-label">Likes totaux</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">{{ getActiveSuggestions() }}</div>
+      <div class="stat-label">Suggestions actives</div>
+    </div>
+  </div>
+
+  <!-- Barre de recherche et filtres -->
+  <div class="search-filter-container">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input 
+        type="text" 
+        [(ngModel)]="searchText" 
+        placeholder="Rechercher une suggestion par titre, description ou catégorie..."
+        class="search-input"
+      >
+    </div>
+    
+    <div class="filters">
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedCategory === 'Toutes'"
+        (click)="selectCategory('Toutes')"
+      >
+        Toutes
+      </button>
+      <button 
+        *ngFor="let category of getUniqueCategories()" 
+        class="filter-btn"
+        [class.active]="selectedCategory === category"
+        (click)="selectCategory(category)"
+      >
+        {{ category }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Liste des suggestions -->
+  <div class="suggestions-grid" *ngIf="filteredSuggestions.length > 0; else noResults">
+    <div 
+      *ngFor="let s of filteredSuggestions" 
+      class="suggestion-card"
+      [class.refused]="s.status === 'refusee'"
+    >
+      <div class="card-header">
+        <h3 class="card-title">{{ s.title }}</h3>
+        <span 
+          class="card-status"
+          [ngClass]="{
+            'status-accepted': s.status === 'acceptee',
+            'status-pending': s.status === 'en_attente',
+            'status-refused': s.status === 'refusee'
+          }"
+        >
+          {{ getStatusLabel(s.status) }}
+        </span>
+      </div>
+      
+      <div class="card-date">
+        <i class="far fa-calendar"></i>
+        {{ s.date | date:'dd/MM/yyyy' }}
+      </div>
+      
+      <p class="card-description">{{ s.description }}</p>
+      
+      <div class="card-category-container">
+        <span class="card-category">
+          <i class="fas fa-tag"></i>
+          {{ s.category }}
+        </span>
+      </div>
+      
+      <div class="card-footer">
+        <div class="likes-container">
+          <i class="fas fa-heart"></i>
+          <span class="likes-count">{{ s.nbLikes }}</span>
+          <span>Likes</span>
+        </div>
+        
+        <div class="actions">
+          <button 
+            class="btn btn-like" 
+            [class.disabled]="s.status === 'refusee'"
+            [disabled]="s.status === 'refusee'"
+            (click)="like(s)"
+            [ngClass]="{'liked': isLiked(s)}"
+          >
+            <i class="fas fa-thumbs-up"></i>
+            {{ isLiked(s) ? 'Liked' : 'Like' }}
+          </button>
+          
+          <button 
+            class="btn btn-favorite" 
+            [class.disabled]="s.status === 'refusee'"
+            [disabled]="s.status === 'refusee'"
+            (click)="addToFavorites(s)"
+            [ngClass]="{'favorited': isInFavorites(s)}"
+          >
+            <i class="fas fa-star"></i>
+            {{ isInFavorites(s) ? 'Favori' : 'Favoris' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message si aucun résultat -->
+  <ng-template #noResults>
+    <div class="no-results">
+      <i class="fas fa-search fa-3x"></i>
+      <h3>Aucune suggestion trouvée</h3>
+      <p>Essayez de modifier vos critères de recherche ou de filtrage</p>
+    </div>
+  </ng-template>
+
+  <!-- Liste des favoris (optionnel) -->
+  <div *ngIf="favorites.length > 0" class="favorites-section">
+    <h2><i class="fas fa-star"></i> Vos Favoris ({{ favorites.length }})</h2>
+    <div class="favorites-grid">
+      <div *ngFor="let fav of favorites" class="favorite-card">
+        <h4>{{ fav.title }}</h4>
+        <p class="favorite-category">{{ fav.category }}</p>
+        <button class="btn-remove-favorite" (click)="removeFromFavorites(fav)">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
