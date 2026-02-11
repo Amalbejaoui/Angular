@@ -26,24 +26,24 @@
   <div class="search-filter-container">
     <div class="search-box">
       <i class="fas fa-search"></i>
-      <input 
-        type="text" 
-        [(ngModel)]="searchText" 
+      <input
+        type="text"
+        [(ngModel)]="searchText"
         placeholder="Rechercher une suggestion par titre, description ou catégorie..."
         class="search-input"
       >
     </div>
-    
+
     <div class="filters">
-      <button 
-        class="filter-btn" 
+      <button
+        class="filter-btn"
         [class.active]="selectedCategory === 'Toutes'"
         (click)="selectCategory('Toutes')"
       >
         Toutes
       </button>
-      <button 
-        *ngFor="let category of getUniqueCategories()" 
+      <button
+        *ngFor="let category of getUniqueCategories()"
         class="filter-btn"
         [class.active]="selectedCategory === category"
         (click)="selectCategory(category)"
@@ -55,49 +55,56 @@
 
   <!-- Liste des suggestions -->
   <div class="suggestions-grid" *ngIf="filteredSuggestions.length > 0; else noResults">
-    <div 
-      *ngFor="let s of filteredSuggestions" 
+    <div
+      *ngFor="let s of filteredSuggestions"
       class="suggestion-card"
       [class.refused]="s.status === 'refusee'"
     >
+      <!-- Header -->
       <div class="card-header">
         <h3 class="card-title">{{ s.title }}</h3>
-        <span 
+        <span
           class="card-status"
           [ngClass]="{
-            'status-accepted': s.status === 'acceptee',
-            'status-pending': s.status === 'en_attente',
-            'status-refused': s.status === 'refusee'
-          }"
+          'status-accepted': s.status === 'acceptee',
+          'status-pending': s.status === 'en_attente',
+          'status-refused': s.status === 'refusee'
+        }"
         >
-          {{ getStatusLabel(s.status) }}
-        </span>
+        {{ getStatusLabel(s.status) }}
+      </span>
       </div>
-      
+
+      <!-- Date -->
       <div class="card-date">
         <i class="far fa-calendar"></i>
         {{ s.date | date:'dd/MM/yyyy' }}
       </div>
-      
+
+      <!-- Description -->
       <p class="card-description">{{ s.description }}</p>
-      
+
+      <!-- Category -->
       <div class="card-category-container">
-        <span class="card-category">
-          <i class="fas fa-tag"></i>
-          {{ s.category }}
-        </span>
+      <span class="card-category">
+        <i class="fas fa-tag"></i>
+        {{ s.category }}
+      </span>
       </div>
-      
+
+      <!-- Footer -->
       <div class="card-footer">
+        <!-- Likes -->
         <div class="likes-container">
           <i class="fas fa-heart"></i>
           <span class="likes-count">{{ s.nbLikes }}</span>
           <span>Likes</span>
         </div>
-        
+
+        <!-- Actions -->
         <div class="actions">
-          <button 
-            class="btn btn-like" 
+          <button
+            class="btn btn-like"
             [class.disabled]="s.status === 'refusee'"
             [disabled]="s.status === 'refusee'"
             (click)="like(s)"
@@ -106,9 +113,9 @@
             <i class="fas fa-thumbs-up"></i>
             {{ isLiked(s) ? 'Liked' : 'Like' }}
           </button>
-          
-          <button 
-            class="btn btn-favorite" 
+
+          <button
+            class="btn btn-favorite"
             [class.disabled]="s.status === 'refusee'"
             [disabled]="s.status === 'refusee'"
             (click)="addToFavorites(s)"
@@ -117,11 +124,19 @@
             <i class="fas fa-star"></i>
             {{ isInFavorites(s) ? 'Favori' : 'Favoris' }}
           </button>
+
+          <!-- Bouton Details -->
+          <button
+            class="btn btn-details"
+            [routerLink]="['/suggestions', s.id]"
+          >
+            <i class="fas fa-info-circle"></i>
+            Details
+          </button>
         </div>
       </div>
     </div>
   </div>
-
   <!-- Message si aucun résultat -->
   <ng-template #noResults>
     <div class="no-results">
@@ -141,6 +156,7 @@
         <button class="btn-remove-favorite" (click)="removeFromFavorites(fav)">
           <i class="fas fa-times"></i>
         </button>
+
       </div>
     </div>
   </div>
