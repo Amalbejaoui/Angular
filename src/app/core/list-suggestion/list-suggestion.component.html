@@ -52,6 +52,15 @@
       </button>
     </div>
   </div>
+<button routerLink="/suggestions/add" class="btn-add">
+  <div class="add-btn-container">
+  <button routerLink="/suggestions/add" class="btn-add">
+    <i class="fas fa-plus"></i>
+    Ajouter une suggestion
+  </button>
+</div>
+
+</button>
 
   <!-- Liste des suggestions -->
   <div class="suggestions-grid" *ngIf="filteredSuggestions.length > 0; else noResults">
