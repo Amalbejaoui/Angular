@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import {Suggestion} from '../../../models/suggestion';
+import {SuggestionService} from '../../../core/services/suggestion.service';
+
 
 @Component({
   selector: 'app-suggestion-details',
@@ -8,12 +11,20 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class SuggestionDetailsComponent implements OnInit {
 
+  suggestion!: Suggestion;
   id!: number;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private actR: ActivatedRoute,
+    private service: SuggestionService
+  ) {}
 
-  ngOnInit(): void {
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
+  ngOnInit() {
+    this.id = this.actR.snapshot.params['id'];
+
+    this.service.getSuggestionById(this.id)
+      .subscribe((data: Suggestion) => {
+        this.suggestion = data;
+      });
   }
-
 }

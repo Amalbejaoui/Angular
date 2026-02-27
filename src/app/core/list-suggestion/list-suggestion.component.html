@@ -133,7 +133,7 @@
             <i class="fas fa-star"></i>
             {{ isInFavorites(s) ? 'Favori' : 'Favoris' }}
           </button>
-
+          <button (click)="delete(s.id)">Supprimer</button>
           <!-- Bouton Details -->
           <button
             class="btn btn-details"
